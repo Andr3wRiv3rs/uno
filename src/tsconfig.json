@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "declaration": false,
+    "baseUrl": ".",
+    "sourceMap": true,
+    "lib": ["DOM", "ES2020", "WebWorker", "WebWorker.ImportScripts"],
+    "allowSyntheticDefaultImports": true,
+    "strictFunctionTypes": false,
+    "paths": {
+      "@types": ["../@types/index"],
+      "/@/*": ["*"],
+    },
+    "typeRoots": [
+      "../@types/index",
+    ],
+    "jsx": "react",
+    "jsxFragmentFactory": "h",
+    "jsxFactory": "h",
+  },
+  "exclude": [
+    "../.webpack/**/*",
+    "../.vscode/**/*",
+    "**/*.js"
+  ],
+  "include": [
+    "index.tsx",
+    "shims.d.ts", 
+    "../@types/index", 
+    "**/*.vue",
+  ],
+}

@@ -1,0 +1,15 @@
+@import './theme.scss';
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Manrope;
+  font-weight: 500;
+}
+
+:root {
+  background-color: var(--background);
+  color: var(--text);
+}
