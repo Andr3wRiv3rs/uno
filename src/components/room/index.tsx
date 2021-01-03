@@ -8,22 +8,40 @@ import {
 import {
   observer, 
 } from 'mobx-react-lite'
+// import {
+//   SafeLobby, 
+// } from '/@/../@types/Lobby'
 import {
-  SafeLobby, 
-} from '/@/../@types/Lobby'
+  useEffect,
+  useRef, 
+} from 'preact/hooks'
+import {
+  pixi,
+} from '../../utils'
 
-const Game = (props: {
-  lobby: SafeLobby,
-}) => {
-  return <div />
-}
+// const init = (lobby: SafeLobby) => {
+
+// }
 
 export const Room = observer((props: {
   name: string
 }) => {
   const lobby = lobbyStore.list.find(lobby => lobby.name === props.name)
+  const pixiContainer = useRef(null)
+
+  lobby
+
+  useEffect(() => {
+    // if (!pixiContainer || !lobby) return
+
+    pixiContainer.current.appendChild(pixi.view)
+    pixi.resizeTo = pixiContainer.current
+
+    // init(lobby)
+  // }, [pixiContainer, lobby])
+  }, [])
 
   return <div className={styles.room}>
-    <Game lobby={lobby} />
+    <div className={styles.container} ref={pixiContainer} />
   </div>
 })
