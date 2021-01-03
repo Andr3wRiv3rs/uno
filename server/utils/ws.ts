@@ -1,5 +1,6 @@
 import WebSocket from 'ws'
 import {
+  SafePlayer,
   WebsocketMessage,
 } from '../../@types'
 import {
@@ -11,6 +12,8 @@ import {
 export * from '../../common/ws'
 
 export class WebsocketPeer extends WebsocketClient {
+  player: SafePlayer
+
   constructor (websocket: WebSocket) {
     super()
 
@@ -52,9 +55,9 @@ export class WebsocketServer {
     this.server.on('error', callback)
   }
 
-  onConnection (callback: (websocket?: WebsocketPeer, request?: IncomingMessage) => void): void {
-    this.server.on('connection', (ws: WebSocket, request: IncomingMessage) => {
-      callback(new WebsocketPeer(ws), request)
+  onConnection (callback: (websocket?: WebsocketPeer, nickname?: string, request?: IncomingMessage) => void): void {
+    this.server.on('connection', (ws: WebSocket, nickname: string, request: IncomingMessage) => {
+      callback(new WebsocketPeer(ws), nickname, request)
     })
   }
 }

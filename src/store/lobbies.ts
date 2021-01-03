@@ -2,33 +2,34 @@ import {
   makeAutoObservable,
 } from 'mobx'
 import {
-  Lobby, WebsocketSubscriptionPayload, 
+  LobbyPayload,
+  WebsocketSubscriptionPayload, 
 } from '../../@types'
 import {
   ws, 
 } from '../utils'
 
-class Lobbies {
-  list: Lobby[] = []
+class LobbyStore {
+  list: LobbyPayload[] = []
 
   constructor () {
     makeAutoObservable(this)
   }
 
-  insert (lobby: Lobby): void {
-    this.list.push(lobby)
+  insert (lobbies: LobbyPayload[]): void {
+    lobbyStore.list.push(...lobbies)
   }
 
   remove (name: string): void {
-    this.list.splice(this.list.findIndex(lobby => lobby.name === name), 1)
+    lobbyStore.list.splice(this.list.findIndex(lobby => lobby.name === name), 1)
   }
 
-  create (lobby: Lobby) {
-    ws.sendEvent<Lobby>('create-lobby', lobby)
+  create (lobby: LobbyPayload) {
+    ws.sendEvent<LobbyPayload>('create-lobby', lobby)
   }
 }
 
-export const lobbies = new Lobbies()
+export const lobbyStore = new LobbyStore()
 
 ws.sendEvent<WebsocketSubscriptionPayload>('subscribe', {
   name: 'lobbies',
@@ -36,5 +37,5 @@ ws.sendEvent<WebsocketSubscriptionPayload>('subscribe', {
   persistent: true,
 })
 
-ws.onEvent<Lobby>('insert-lobby', lobbies.insert)
-ws.onEvent<string>('remove-lobby', lobbies.remove)
+ws.onEvent<LobbyPayload[]>('insert-lobbies', lobbyStore.insert)
+ws.onEvent<string>('remove-lobby', lobbyStore.remove)

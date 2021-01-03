@@ -1,8 +1,14 @@
 .home {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 60px;
   padding: 60px;
   align-items: center;
+  flex-direction: column;
+
+  > h1 {
+    font-size: 60px;
+  }
 
   > input {
     width: 830px;
@@ -10,27 +16,24 @@
     margin-bottom: 30px;
   }
 
+  input[type="checkbox"] + label {
+    margin-left: 5px;
+  }
+
   > div {
     display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    justify-content: center;
-  
-    > div {
-      display: flex;
-      flex-direction: column;
-      width: 400px;
-      max-width: 100%;
-  
-      h2 {
-        font-size: 24px;
-      }
+    flex-direction: column;
+    width: 400px;
+    max-width: 100%;
 
-      > *:not(:last-child) {
-        margin-bottom: 15px;
-      }
+    h2 {
+      font-size: 24px;
     }
-  } 
+
+    > *:not(:last-child) {
+      margin-bottom: 15px;
+    }
+  }
 }
 
 .lobbies {

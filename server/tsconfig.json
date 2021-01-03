@@ -19,7 +19,7 @@
     ]
   },
   "include": [
-    "./index.ts",
+    "index.ts",
     "../@types/index.ts",
   ],
   "exclude": [
