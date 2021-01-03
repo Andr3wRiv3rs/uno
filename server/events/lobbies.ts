@@ -16,12 +16,23 @@ export const createLobby: WebsocketEvent = {
     const lobby = message as Lobby
 
     if (!lobby?.name || !constraints.name(lobby.name)) return throwError('Invalid name. Must be 1-32 characters long.')
-    if (typeof lobby?.private !== 'boolean') return throwError('Invalid private option. Must be a boolean.')
+    if (typeof lobby?.isPrivate !== 'boolean') return throwError('Invalid private option. Must be a boolean.')
 
     insertLobby({
       name: lobby.name,
-      private: lobby.private,
+      isPrivate: lobby.isPrivate,
       host: peer.player,
+      players: [
+        {
+          ...peer.player,
+          hand: [],
+        },
+      ],
+      turn: 1,
+      discard: [],
+      withdraw: [],
+      order: 1,
+      started: true,
     })
   },
 }

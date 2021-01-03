@@ -15,6 +15,7 @@ import {
 
 const Create = () => {
   const [name, setName] = useState('')
+  const [isPrivate, setPrivate] = useState(false)
 
   const handleChange = event => {
     const target: HTMLInputElement = event.target
@@ -22,19 +23,25 @@ const Create = () => {
     setName(target.value)
   }
 
+  const handleCheckboxChange = event => {
+    const target: HTMLInputElement = event.target
+
+    setPrivate(target.value === 'on')
+  }
+
   const handleClick = () => {
     lobbyStore.create({
       name,
-      private: false,
+      isPrivate,
     })
   }
 
   return <div>
     <h2>create a game</h2>
-    <input placeholder="lobby name.." />
+    <input placeholder="lobby name.." onChange={handleChange} />
 
     <span>
-      <input id="private" type="checkbox" onChange={handleChange} />
+      <input id="private" type="checkbox" onChange={handleCheckboxChange} />
       <label for="private">private</label>
     </span>
 

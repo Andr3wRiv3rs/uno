@@ -8,7 +8,7 @@ import {
 
 export interface LobbyPayload {
   name: string
-  private: boolean
+  isPrivate: boolean
 }
 
 export interface SafeLobby extends LobbyPayload {
@@ -16,8 +16,8 @@ export interface SafeLobby extends LobbyPayload {
   players: SafePlayer[]
   turn: number
   discard: Card[]
-  order: 1
-  started: false
+  order: -1 | 1
+  started: boolean
 }
 
 export interface Lobby extends SafeLobby {
