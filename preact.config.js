@@ -1,7 +1,7 @@
 module.exports = function(config) {
   config.devServer.proxy = [
     {
-      path: '/api/**',
+      path: '/api',
       target: 'http://localhost:8000/api',
       changeOrigin: true,
       changeHost: true,

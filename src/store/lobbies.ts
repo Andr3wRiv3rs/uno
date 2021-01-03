@@ -3,20 +3,25 @@ import {
 } from 'mobx'
 import {
   LobbyPayload,
+  SafeLobby,
   WebsocketSubscriptionPayload, 
 } from '../../@types'
 import {
+  api,
   ws, 
 } from '../utils'
+import {
+  AxiosResponse,
+} from 'axios'
 
 class LobbyStore {
-  list: LobbyPayload[] = []
+  list: SafeLobby[] = []
 
   constructor () {
     makeAutoObservable(this)
   }
 
-  insert (lobbies: LobbyPayload[]): void {
+  insert (lobbies: SafeLobby[]): void {
     lobbyStore.list.push(...lobbies)
   }
 
@@ -24,8 +29,8 @@ class LobbyStore {
     lobbyStore.list.splice(this.list.findIndex(lobby => lobby.name === name), 1)
   }
 
-  create (lobby: LobbyPayload) {
-    ws.sendEvent<LobbyPayload>('create-lobby', lobby)
+  async create (lobby: LobbyPayload): Promise<AxiosResponse<SafeLobby>> {
+    return await api.post<SafeLobby>('/lobbies/create', lobby).catch(r => r)
   }
 }
 

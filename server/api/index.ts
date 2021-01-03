@@ -7,6 +7,7 @@ import {
   KoaState,
 } from '../../@types'
 import AuthRouter from './auth'
+import LobbyRouter from './lobbies'
 
 const router = new Router<KoaState>()
 
@@ -23,5 +24,6 @@ router.use(async (ctx, next) => {
 })
 
 router.use('/auth', AuthRouter)
+router.use('/lobbies', LobbyRouter)
 
 export default router.routes()

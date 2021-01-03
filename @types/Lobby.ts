@@ -18,9 +18,10 @@ export interface SafeLobby extends LobbyPayload {
   discard: Card[]
   order: -1 | 1
   started: boolean
+  chat: []
 }
 
 export interface Lobby extends SafeLobby {
-  withdraw: Card[]
+  draw: Card[]
   players: Player[]
 }

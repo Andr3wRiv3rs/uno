@@ -12,6 +12,12 @@ import {
   lobbyStore,
   authStore,
 } from '../../store'
+import {
+  Link, 
+} from 'preact-router/match'
+import {
+  route, 
+} from 'preact-router'
 
 const Create = () => {
   const [name, setName] = useState('')
@@ -33,6 +39,8 @@ const Create = () => {
     lobbyStore.create({
       name,
       isPrivate,
+    }).then(({ data: lobby }) => {
+      route(lobby.name)
     })
   }
 
@@ -55,7 +63,9 @@ const Lobbies = observer(() => {
   }) => (
     <div>
       <h3>{name}</h3>
-      <button>join</button>
+      <Link href={`/room/${name}`}>
+        <button>join</button>
+      </Link>
     </div>
   ))
 

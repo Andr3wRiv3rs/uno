@@ -13,6 +13,7 @@ export const getSafeLobby = (lobby: Lobby): SafeLobby => {
     discard,
     order,
     started,
+    chat,
   } = lobby
 
   return {
@@ -24,5 +25,6 @@ export const getSafeLobby = (lobby: Lobby): SafeLobby => {
     discard,
     order,
     started,
+    chat,
   }
 }
