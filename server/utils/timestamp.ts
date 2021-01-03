@@ -1,1 +1,1 @@
-export const getTimestamp = (): string => '[UTC] ' + new Date().toLocaleString('en-US', { timeZone: 'UTC' })
+export const getTimestamp = (): string => `[UTC] ${new Date().toLocaleString('en-US', { timeZone: 'UTC' })}`

@@ -40,7 +40,7 @@ const Create = () => {
       name,
       isPrivate,
     }).then(({ data: lobby }) => {
-      route(lobby.name)
+      route(`/room/${lobby.name}`)
     })
   }
 

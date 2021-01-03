@@ -1,11 +1,10 @@
 import {
   Card,
-  SafeCard, 
 } from "./Card"
 
 export interface SafePlayer {
   nickname: string
-  hand?: SafeCard[]
+  hand?: Card[]
   index?: number
 }
 

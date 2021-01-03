@@ -1,5 +1,6 @@
 import {
-  Card, 
+  Card,
+  CardColor, 
 } from "./Card"
 import {
   Player,
@@ -19,6 +20,7 @@ export interface SafeLobby extends LobbyPayload {
   order: -1 | 1
   started: boolean
   chat: []
+  currentColor: CardColor
 }
 
 export interface Lobby extends SafeLobby {
