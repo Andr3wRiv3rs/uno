@@ -4,7 +4,7 @@ import {
 } from '../../@types'
 import * as constraints from '../../common/constraints'
 
-const MAX_DATE = 2147483647
+const YEAR = 31556952000
 
 const router = new Router<KoaState>()
 
@@ -21,10 +21,10 @@ router.get('/', ctx => {
 router.post('/set-nickname', ctx => {
   const { nickname } = ctx.request.body
 
-  if (!constraints.name(nickname)) return ctx.throw(401, 'Invalid name. Must be 1-32 characters long.')
+  if (!constraints.name(nickname)) return ctx.throw(400, 'Invalid name. Must be 1-32 characters long.')
 
   ctx.cookies.set('nickname', nickname, {
-    expires: new Date(MAX_DATE),
+    expires: new Date(Date.now() + YEAR),
     sameSite: 'lax',
   })
 

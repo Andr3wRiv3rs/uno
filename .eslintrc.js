@@ -15,6 +15,7 @@ module.exports = {
   },
 
   rules: {
+    'no-unused-vars': 'warn',
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'semi': ['error', 'never'],
@@ -82,7 +83,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['**.ts'],
+      files: ['**.ts', '**.tsx'],
 
       extends: [
         "plugin:@typescript-eslint/eslint-recommended",
@@ -90,6 +91,7 @@ module.exports = {
       ],
 
       rules: {
+        'no-undef': 'off',
         '@typescript-eslint/member-delimiter-style': ['error', {
           multiline: {
             delimiter: "none",
