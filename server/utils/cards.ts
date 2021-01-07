@@ -6,7 +6,7 @@ import {
 } from "../../@types"
 
 export const generateCards = (count: number, type: CardType): Card[] => {
-  const colors: CardColor[] = ['red', 'green', 'blue', 'yellow', 'special']  
+  const colors: CardColor[] = ['red', 'green', 'blue', 'yellow']  
 
   const cards: Card[] = []
 

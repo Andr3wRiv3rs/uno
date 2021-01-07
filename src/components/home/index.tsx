@@ -1,4 +1,5 @@
 import {
+  FunctionalComponent,
   h,
 } from 'preact'
 import {
@@ -19,7 +20,7 @@ import {
   route, 
 } from 'preact-router'
 
-const Create = () => {
+const Create: FunctionalComponent = () => {
   const [name, setName] = useState('')
   const [isPrivate, setPrivate] = useState(false)
 
@@ -57,7 +58,7 @@ const Create = () => {
   </div>
 }
 
-const Lobbies = observer(() => {
+const Lobbies: FunctionalComponent = observer(() => {
   const list = lobbyStore.list.map(({
     name,
   }) => (
@@ -74,14 +75,14 @@ const Lobbies = observer(() => {
   }</div>
 })
 
-const Browse = () => (
+const Browse: FunctionalComponent = () => (
   <div>
     <h2>browse for games</h2>
     <Lobbies />
   </div>
 )
 
-const Auth = () => {
+const Auth: FunctionalComponent = () => {
   const [nickname, setNickname] = useState('')
 
   const handleChange = event => {
@@ -100,7 +101,7 @@ const Auth = () => {
   </div>
 }
 
-export const Home = observer(() => <>
+export const Home: FunctionalComponent = observer(() => <>
   <div className={styles.home}>
     <h1>Uno</h1>
     {

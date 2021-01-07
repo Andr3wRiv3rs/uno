@@ -9,7 +9,7 @@ module.exports = function(config) {
       pathRewrite(path, req) {
         delete req.headers.referer
 
-        return `/${  path.replace(/^\/[^\/]+\//, '')}`
+        return `/${  path.replace(/^\/[^/]+\//, '')}`
       },
 
       onProxyRes(proxyRes) {

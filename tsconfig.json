@@ -10,25 +10,25 @@
     "allowSyntheticDefaultImports": true,
     "strictFunctionTypes": false,
     "paths": {
-      "@types": ["../@types/index"],
-      "/@/*": ["*"],
+      "@types": ["./@types/index"],
+      "/@/*": ["./src"],
     },
     "typeRoots": [
-      "../@types/index",
+      "./@types/index",
     ],
     "jsx": "react",
     "jsxFragmentFactory": "h",
     "jsxFactory": "h",
   },
   "exclude": [
-    "../.webpack/**/*",
-    "../.vscode/**/*",
+    "./.webpack/**/*",
+    "./.vscode/**/*",
     "**/*.js"
   ],
   "include": [
-    "index.tsx",
-    "shims.d.ts", 
-    "../@types/index", 
-    "**/*.vue",
+    "./src/index.tsx",
+    "./src/shims.d.ts", 
+    "./@types/index", 
+    "./src/**/*.vue",
   ],
 }

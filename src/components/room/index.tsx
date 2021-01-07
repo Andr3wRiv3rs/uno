@@ -1,4 +1,5 @@
 import {
+  FunctionalComponent,
   h,
 } from 'preact'
 import styles from './index.scss'
@@ -22,16 +23,27 @@ import {
 } from '../../utils'
 import {
   SafeLobby, 
-} from '/@/../@types/Lobby'
-import {
   Player, 
-} from '/@/../@types/Player'
+} from '@types'
+
+const margin = 5
 
 const hands: Record<string, {
   player: Player
   hand: CardObject[]
   index: number
 }> = {}
+
+let discard: CardObject = null
+
+const withdraw: CardObject = new CardObject({
+  type: 0,
+  color: 'red',
+})
+
+withdraw.isHoverable = true
+
+withdraw.flipped = true
 
 // should be optimized better, but will probably be okay
 const isInGame = () => Object.values(hands).find(({ player }) => player.nickname === authStore.nickname)
@@ -51,8 +63,6 @@ const generateHands = (lobby: SafeLobby): void => {
 const alignCardToHand = (card: CardObject, length: number, playerIndex: number, cardIndex: number) => {
   const { clientWidth: width, clientHeight: height } = pixi.view.parentElement
 
-  const margin = 5
-
   card.flipped = true
 
   switch (playerIndex) {
@@ -62,8 +72,9 @@ const alignCardToHand = (card: CardObject, length: number, playerIndex: number, 
 
         card.flipped = false
   
-        card.y = height - (card.height / 2) - margin
-        card.x = offset + ((card.width + margin) * cardIndex)
+        // card.y = height - (card.height / 2) - margin
+        // card.x = offset + ((card.width + margin) * cardIndex)
+        card.moveTo(offset + ((card.width + margin) * cardIndex), height - (card.height / 2) - margin)
       } else {
         const offset = (width / 2) - ((length - 1) / 2 * (card.width / 2 + margin))
   
@@ -127,14 +138,62 @@ const alignHands = () => {
   })
 }
 
-window.addEventListener('resize', () => alignHands())
+const generateDiscardPile = (lobby: SafeLobby) => {
+  if (discard) discard.destroy()
 
-const init = (lobby: SafeLobby) => {
-  generateHands(lobby)
-  alignHands()
+  discard = new CardObject(lobby.discard[lobby.discard.length - 1])
 }
 
-export const Room = observer((props: {
+const alignDiscardWithdrawPiles = () => {
+  if (!discard) return
+
+  const { clientWidth: width, clientHeight: height } = pixi.view.parentElement
+
+  discard.x = width / 2
+  discard.y = height / 2
+
+  withdraw.y = discard.y
+  withdraw.x = discard.x - withdraw.width - 20
+
+  discard.update()
+  withdraw.update()
+}
+
+const align = () => {
+  alignHands()
+  alignDiscardWithdrawPiles()
+}
+
+window.addEventListener('resize', align)
+
+const init = (lobby: SafeLobby) => {
+  generateDiscardPile(lobby)
+  generateHands(lobby)
+  align()
+
+  hands[authStore.nickname].hand.forEach((card) => {
+    card.isHoverable = true
+
+    card.graphics.addListener('mousedown', async () => {
+      card.moveTo(discard.x, discard.y)
+      
+      const index = hands[authStore.nickname].hand.findIndex(({ symbol }) => symbol === card.symbol)
+
+      hands[authStore.nickname].hand.splice(index, 1)
+
+      alignHands()
+
+      await card.rotate(discard.rotation)
+      discard.type = card.type
+      discard.color = card.color
+
+      discard.update()
+      card.destroy()
+    })
+  })
+}
+
+export const Room: FunctionalComponent = observer((props: {
   name: string
 }) => {
   const lobby = lobbyStore.list.find(lobby => lobby.name === props.name)

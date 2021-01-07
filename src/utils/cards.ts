@@ -18,7 +18,7 @@ import {
   EasingFunctions, 
 } from "./timing"
 import {
-  GameObject,
+  GameObject, gameObjects,
 } from './objects'
 
 const getTypeSymbol = (type: CardType): string => {
@@ -43,6 +43,10 @@ export class CardObject extends GameObject {
   graphics = new PIXI.Graphics()
   flipped = false
   borderWidth = 3
+  hover = false
+  isHoverable = false
+
+  symbol = Symbol()
 
   text = new PIXI.Text("", {
     fontFamily: 'Arial',
@@ -127,6 +131,8 @@ export class CardObject extends GameObject {
 
       container.position.set(x, y)
       container.rotation = rotation * Math.PI
+    }, () => {
+      container.destroy()
     })
 
     const {
@@ -150,6 +156,11 @@ export class CardObject extends GameObject {
     container.addChild(graphics)
     container.addChild(text)
     pixi.stage.addChild(container)
+
+    graphics.interactive = true
+
+    graphics.addListener('mouseover', () => this.hover = this.isHoverable && true)
+    graphics.addListener('mouseout', () => this.hover = false)
 
     this.type = card.type
     this.color = card.color
@@ -187,8 +198,8 @@ export class CardObject extends GameObject {
   async moveTo (x: number, y: number): Promise<void> {
     const startX = this.x
     const startY = this.y
-    const xDistance = (x + (this.width / 2)) - this.x
-    const yDistance = (y + (this.height / 2)) - this.y
+    const xDistance = x - this.x
+    const yDistance = y - this.y
 
     await animate(500, t => {
       this.x = startX + (xDistance * EasingFunctions.easeOutQuad(t))
@@ -198,3 +209,9 @@ export class CardObject extends GameObject {
     })
   }
 }
+
+setInterval(() => {
+  const isHoveringOverCard = (gameObjects as CardObject[]).filter(({ hover }) => hover).length > 0
+
+  pixi.view.style.cursor = isHoveringOverCard ? 'pointer' : 'default'
+}, 1000 / 60)

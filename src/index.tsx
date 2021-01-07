@@ -1,6 +1,5 @@
-// @ts-nocheck
-
 import {
+  FunctionalComponent,
   h,
 } from 'preact'
 import './scss'
@@ -13,7 +12,7 @@ import {
 import Router from 'preact-router'
 import './utils/index.ts'
 
-const app = () => (
+const app: FunctionalComponent = () => (
   <Router>
     <Home path="/" />
     <Room path="/room/:name" />
