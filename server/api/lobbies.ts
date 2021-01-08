@@ -49,6 +49,7 @@ router.post('/create', AuthMiddleware, ctx => {
     started: false,
     chat: [],
     currentColor: discard[discard.length - 1].color,
+    awaitingChoice: false,
   }
 
   insertLobby(lobby)

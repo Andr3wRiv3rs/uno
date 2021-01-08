@@ -45,6 +45,8 @@ export class CardObject extends GameObject {
   borderWidth = 3
   hover = false
   isHoverable = false
+  
+  mousedownListener: (event: PIXI.InteractionEvent) => void
 
   symbol = Symbol()
 

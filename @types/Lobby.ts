@@ -21,6 +21,7 @@ export interface SafeLobby extends LobbyPayload {
   started: boolean
   chat: []
   currentColor: CardColor
+  awaitingChoice: boolean
 }
 
 export interface Lobby extends SafeLobby {

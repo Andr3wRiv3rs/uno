@@ -36,14 +36,14 @@ const hands: Record<string, {
 
 let discard: CardObject = null
 
-const withdraw: CardObject = new CardObject({
+const draw: CardObject = new CardObject({
   type: 0,
   color: 'red',
 })
 
-withdraw.isHoverable = true
+draw.isHoverable = true
 
-withdraw.flipped = true
+draw.flipped = true
 
 // should be optimized better, but will probably be okay
 const isInGame = () => Object.values(hands).find(({ player }) => player.nickname === authStore.nickname)
@@ -141,10 +141,10 @@ const alignHands = () => {
 const generateDiscardPile = (lobby: SafeLobby) => {
   if (discard) discard.destroy()
 
-  discard = new CardObject(lobby.discard[lobby.discard.length - 1])
+  discard = new CardObject(lobby.discard.slice(-1)[0])
 }
 
-const alignDiscardWithdrawPiles = () => {
+const alignDiscardDrawPiles = () => {
   if (!discard) return
 
   const { clientWidth: width, clientHeight: height } = pixi.view.parentElement
@@ -152,16 +152,73 @@ const alignDiscardWithdrawPiles = () => {
   discard.x = width / 2
   discard.y = height / 2
 
-  withdraw.y = discard.y
-  withdraw.x = discard.x - withdraw.width - 20
+  draw.y = discard.y
+  draw.x = discard.x - draw.width - 20
 
   discard.update()
-  withdraw.update()
+  draw.update()
 }
 
 const align = () => {
   alignHands()
-  alignDiscardWithdrawPiles()
+  alignDiscardDrawPiles()
+}
+
+const testMatchingCards = (lobby: SafeLobby) => {
+  const isMyTurn = true
+
+  let hasPlayableCard = false
+
+  hands[authStore.nickname].hand.forEach((card) => {
+    const [lastCard] = lobby.discard.slice(-1)
+
+    const isSpecialCard = card.color === 'special'
+    const isSameType = card.type === lastCard.type
+    const isSameColor = card.color === lastCard.color
+
+    if (isMyTurn && (isSpecialCard || isSameColor || isSameType)) {
+      card.container.alpha = 1
+      card.isHoverable = true
+
+      hasPlayableCard = true
+
+      if (card.mousedownListener) return
+
+      card.mousedownListener = async () => {
+        card.moveTo(discard.x, discard.y)
+        
+        const index = hands[authStore.nickname].hand.findIndex(({ symbol }) => symbol === card.symbol)
+  
+        hands[authStore.nickname].hand.splice(index, 1)
+  
+        alignHands()
+  
+        await card.rotate(discard.rotation)
+        discard.type = card.type
+        discard.color = card.color
+  
+        discard.update()
+        card.destroy()
+
+        testMatchingCards(lobby)
+      }
+  
+      card.graphics.addListener('mousedown', card.mousedownListener)
+    } else {
+      card.container.alpha = 0.4
+      card.isHoverable = false
+      card.graphics.removeListener('mousedown', card.mousedownListener)
+      card.mousedownListener = null
+    }
+  })
+
+  if (!hasPlayableCard) {
+    draw.container.alpha = 1
+    draw.isHoverable = true
+  } else {
+    draw.container.alpha = 0.4
+    draw.isHoverable = false
+  }
 }
 
 window.addEventListener('resize', align)
@@ -170,27 +227,7 @@ const init = (lobby: SafeLobby) => {
   generateDiscardPile(lobby)
   generateHands(lobby)
   align()
-
-  hands[authStore.nickname].hand.forEach((card) => {
-    card.isHoverable = true
-
-    card.graphics.addListener('mousedown', async () => {
-      card.moveTo(discard.x, discard.y)
-      
-      const index = hands[authStore.nickname].hand.findIndex(({ symbol }) => symbol === card.symbol)
-
-      hands[authStore.nickname].hand.splice(index, 1)
-
-      alignHands()
-
-      await card.rotate(discard.rotation)
-      discard.type = card.type
-      discard.color = card.color
-
-      discard.update()
-      card.destroy()
-    })
-  })
+  testMatchingCards(lobby)
 }
 
 export const Room: FunctionalComponent = observer((props: {

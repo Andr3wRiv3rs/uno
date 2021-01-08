@@ -15,6 +15,7 @@ export const getSafeLobby = (lobby: Lobby): SafeLobby => {
     started,
     chat,
     currentColor,
+    awaitingChoice,
   } = lobby
 
   return {
@@ -28,5 +29,6 @@ export const getSafeLobby = (lobby: Lobby): SafeLobby => {
     started,
     chat,
     currentColor,
+    awaitingChoice,
   }
 }
