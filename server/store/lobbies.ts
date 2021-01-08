@@ -59,11 +59,13 @@ export const drawCard = (lobby: Lobby, nickname: string, wasForced: boolean): vo
 
   if (!wasForced) updateTurn(lobby)
 
-  updateLobby(lobby, {})
-
   // TODO: check if player has any playable cards
 
   lobbyEmitter.emit('draw-card', lobby, nickname, card, wasForced)
+
+  updateLobby(lobby, {
+    turn: lobby.turn,
+  })
 }
 
 export const chooseColor = (lobby: Lobby, nickname: string, color: CardColor): void => {
