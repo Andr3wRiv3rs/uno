@@ -1,5 +1,4 @@
 import {
-  getSafeLobby,
   WebsocketSubscription, 
 } from "../utils"
 import {
@@ -7,25 +6,19 @@ import {
 } from "../websockets"
 import {
   Lobby,
-  SafeLobby, 
 } from "../../@types/Lobby"
 import {
-  lobbies,
   lobbyEmitter,
 } from '../store'
 import {
-  Card, 
+  Card, Player, 
 } from "../../@types"
 
 // TODO: fix inconsistent naming wiith lobbies/room
 
 export const Room: WebsocketSubscription<string> = {
-  regex: /^lobbies$/,
+  regex: /^room$/,
   subscriptions: [],
-
-  onSubscribe (peer) {
-    peer.sendEvent<SafeLobby[]>('set-lobbies', lobbies.map(getSafeLobby))
-  },
 } 
 
 const peers = (lobby: Lobby) => Room.subscriptions
@@ -39,13 +32,18 @@ lobbyEmitter.on('play-card', (lobby: Lobby, nickname: string, cardIndex: number)
   })
 })
 
-lobbyEmitter.on('draw-card', (lobby: Lobby, nickname: string, card: Card) => {
-  broadcastTo(peers(lobby), 'play-card', {
+lobbyEmitter.on('draw-card', (lobby: Lobby, nickname: string, card: Card, wasForced: boolean) => {
+  broadcastTo(peers(lobby), 'draw-card', {
     nickname,
     card,
+    wasForced,
   })
 })
 
 lobbyEmitter.on('turn-end', (lobby: Lobby) => {
-  broadcastTo(peers(lobby), 'turn-end')
+  broadcastTo(peers(lobby), 'turn-end', lobby.turn)
+})
+
+lobbyEmitter.on('insert-player', (lobby: Lobby, player: Player) => {
+  broadcastTo(peers(lobby), 'insert-player', player)
 })

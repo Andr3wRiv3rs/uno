@@ -1,21 +1,43 @@
 import {
+  configure,
   makeAutoObservable,
 } from 'mobx'
 import {
+  CardColor,
   LobbyPayload,
+  Player,
   SafeLobby,
   WebsocketSubscriptionPayload, 
 } from '../../@types'
 import {
   api,
+  CardObject,
   ws, 
 } from '../utils'
 import {
   AxiosResponse,
 } from 'axios'
 
+configure({
+  enforceActions: 'never',
+})
+
 class LobbyStore {
   list: SafeLobby[] = []
+  current: SafeLobby
+
+  players: Record<string, {
+    player: Player
+    hand: CardObject[]
+    index: number
+  }> = {}
+
+  discard: CardObject = null
+  
+  draw: CardObject = new CardObject({
+    type: 0,
+    color: 'red',
+  })
 
   constructor () {
     makeAutoObservable(this)
@@ -55,6 +77,54 @@ class LobbyStore {
 
   async create (lobby: LobbyPayload): Promise<AxiosResponse<SafeLobby>> {
     return await api.post<SafeLobby>('/lobbies/create', lobby)
+  }
+
+  join (): void {
+    ws.sendEvent<{
+      lobbyName: string
+    }>('join-lobby', {
+      lobbyName: this.current.name,
+    })
+  }
+
+  // TODO: switch to separate store
+  // TODO: return and handle errors for invalid rooms
+
+  subscribeToRoom (lobby: SafeLobby): void {
+    ws.sendEvent('subscribe', {
+      name: 'room',
+      payload: lobby.name,
+    })
+
+    this.current = this.list.find(({ name }) => name === lobby.name)
+  }
+
+  playCard (cardIndex: number): void {
+    ws.sendEvent<{
+      lobbyName: string
+      cardIndex: number
+    }>('play-card', {
+      lobbyName: this.current.name,
+      cardIndex,
+    })
+  }
+
+  drawCard (): void {
+    ws.sendEvent<{
+      lobbyName: string
+    }>('draw-card', {
+      lobbyName: this.current.name,
+    })
+  }
+
+  chooseColor (color: CardColor): void {
+    ws.sendEvent<{
+      lobbyName: string
+      color: CardColor
+    }>('choose-color', {
+      lobbyName: this.current.name,
+      color,
+    })
   }
 }
 

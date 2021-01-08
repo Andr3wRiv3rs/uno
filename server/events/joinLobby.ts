@@ -1,15 +1,12 @@
 import {
-  drawCard,
   insertPlayer,
   lobbies,
-  updateLobby, 
 } from "../store"
 import {
-  generatePlayer,
   WebsocketEvent, 
 } from "../utils"
 
-export const drawCardEvent: WebsocketEvent = {
+export const joinLobbyEvent: WebsocketEvent = {
   regex: /^join-lobby$/,
 
   callback ({ peer, message, throwError }) {

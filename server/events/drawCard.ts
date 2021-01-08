@@ -23,7 +23,7 @@ export const drawCardEvent: WebsocketEvent = {
     if (!lobby) return throwError('Lobby not found')
 
     try {
-      drawCard(lobby, peer.player.nickname)
+      drawCard(lobby, peer.player.nickname, false)
     } catch (error) {
       throwError(error)
     }

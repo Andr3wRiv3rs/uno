@@ -126,10 +126,10 @@ export class CardObject extends GameObject {
       // draw border
 
       graphics.beginFill(0xffffff)
-      graphics.drawRect(0, 0, width, borderWidth)
+      graphics.drawRect(borderWidth, 0, width - (borderWidth * 2), borderWidth)
       graphics.drawRect(0, 0, borderWidth, height)
       graphics.drawRect(width - borderWidth, 0, borderWidth, height)
-      graphics.drawRect(0, height - borderWidth, width, borderWidth)
+      graphics.drawRect(borderWidth, height - borderWidth, width - (borderWidth * 2), borderWidth)
 
       container.position.set(x, y)
       container.rotation = rotation * Math.PI

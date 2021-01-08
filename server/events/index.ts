@@ -14,6 +14,9 @@ import {
 import {
   playCardEvent, 
 } from './playCard'
+import {
+  joinLobbyEvent, 
+} from './joinLobby'
 
 export const events: WebsocketEvent[] = [
   subscribe,
@@ -21,4 +24,5 @@ export const events: WebsocketEvent[] = [
   chooseColorEvent,
   drawCardEvent,
   playCardEvent,
+  joinLobbyEvent,
 ]

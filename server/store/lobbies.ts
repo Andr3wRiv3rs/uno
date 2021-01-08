@@ -31,33 +31,39 @@ export const updatePlayer = (lobby: Lobby, nickname: string, payload: Record<str
 export const insertPlayer = (lobby: Lobby, nickname: string): void => {
   const player = generatePlayer(nickname, lobby.players.length)
 
+  player.hand.push(...lobby.draw.splice(0, 7))
+
   lobby.players.push(player)
 
-  lobbyEmitter.emit('insert-player', player)
+  lobbyEmitter.emit('insert-player', lobby, player)
 }
 
 const updateTurn = (lobby: Lobby) => {
   lobby.turn += lobby.order
       
-  if (lobby.turn === lobby.players.length) lobby.turn = 0
-  if (lobby.turn === -1) lobby.turn = lobby.players.length - 1
+  if (lobby.turn > lobby.players.length - 1) lobby.turn = 0
+  if (lobby.turn < 0) lobby.turn = lobby.players.length - 1
 }
 
-export const drawCard = (lobby: Lobby, nickname: string): void => {
+export const drawCard = (lobby: Lobby, nickname: string, wasForced: boolean): void => {
   const player = lobby.players.find(player => nickname === player.nickname)
 
   // TODO: unify constraints
-  if (!player) throw new Error(`Received invalid player nickname from ${nickname}.`)
+  if (!player) throw `Received invalid player nickname from ${nickname}.`
 
-  if (lobby.turn !== player.index) throw new Error(`Player ${nickname} tried to play a card when it wasn't their turn.`)
+  if (lobby.turn !== player.index) throw `Player ${nickname} tried to play a card when it wasn't their turn.`
 
   const [card] = lobby.draw.splice(-1)
 
   player.hand.push(card)
 
+  if (!wasForced) updateTurn(lobby)
+
+  updateLobby(lobby, {})
+
   // TODO: check if player has any playable cards
 
-  lobbyEmitter.emit('draw', lobby, nickname, card)
+  lobbyEmitter.emit('draw-card', lobby, nickname, card, wasForced)
 }
 
 export const chooseColor = (lobby: Lobby, nickname: string, color: CardColor): void => {
@@ -65,11 +71,11 @@ export const chooseColor = (lobby: Lobby, nickname: string, color: CardColor): v
 
   // TODO: validate inputs
 
-  if (!lobby.awaitingChoice) throw new Error(`Not awaiting a color choice.`)
+  if (!lobby.awaitingChoice) throw `Not awaiting a color choice.`
 
-  if (!player) throw new Error(`Received invalid player nickname from ${nickname}.`)
+  if (!player) throw `Received invalid player nickname from ${nickname}.`
 
-  if (lobby.turn !== player.index) throw new Error(`Player ${nickname} tried to play a card when it wasn't their turn.`)
+  if (lobby.turn !== player.index) throw `Player ${nickname} tried to play a card when it wasn't their turn.`
 
   updateLobby(lobby, {
     currentColor: color,
@@ -79,8 +85,14 @@ export const chooseColor = (lobby: Lobby, nickname: string, color: CardColor): v
   const [lastCard] = lobby.discard.slice(-1)
 
   if (lastCard.type === 'wild-draw-4') {
-    drawCard(lobby, lobby.players[lobby.turn].nickname)
+    updateTurn(lobby)
+    drawCard(lobby, lobby.players[lobby.turn].nickname, true)
+    drawCard(lobby, lobby.players[lobby.turn].nickname, true)
+    drawCard(lobby, lobby.players[lobby.turn].nickname, true)
+    drawCard(lobby, lobby.players[lobby.turn].nickname, true)
   }
+
+  updateTurn(lobby)
 
   lobbyEmitter.emit('turn-end', lobby)
 }
@@ -88,11 +100,11 @@ export const chooseColor = (lobby: Lobby, nickname: string, color: CardColor): v
 export const playCard = (lobby: Lobby, nickname: string, cardIndex: number): void => {
   const player = lobby.players.find(player => nickname === player.nickname)
 
-  if (!player) throw new Error(`Received invalid player nickname from ${nickname}.`)
+  if (!player) throw `Received invalid player nickname from ${nickname}.`
 
   const card = player.hand[cardIndex]
 
-  if (!card) throw new Error(`Received invalid card index from ${nickname}.`)
+  if (!card) throw `Received invalid card index from ${nickname}.`
 
   const [lastCard] = lobby.discard.slice(-1)
 
@@ -100,7 +112,7 @@ export const playCard = (lobby: Lobby, nickname: string, cardIndex: number): voi
   const isSameType = card.type === lastCard.type
   const isSameColor = card.color === lastCard.color
 
-  if (lobby.turn !== player.index) throw new Error(`Player ${nickname} tried to play a card when it wasn't their turn.`)
+  if (lobby.turn !== player.index) throw `Player ${nickname} tried to play a card when it wasn't their turn.`
 
   if (isSpecialCard || isSameType || isSameColor) {
     lobby.discard.push(player.hand.splice(cardIndex, 1)[0])
@@ -110,8 +122,8 @@ export const playCard = (lobby: Lobby, nickname: string, cardIndex: number): voi
     switch (card.type) {
       case 'draw-2':
         updateTurn(lobby)
-        drawCard(lobby, lobby.players[lobby.turn].nickname)
-        drawCard(lobby, lobby.players[lobby.turn].nickname)
+        drawCard(lobby, lobby.players[lobby.turn].nickname, true)
+        drawCard(lobby, lobby.players[lobby.turn].nickname, true)
         updateTurn(lobby)
         break
 
@@ -140,9 +152,5 @@ export const playCard = (lobby: Lobby, nickname: string, cardIndex: number): voi
     })
   }
 
-  if (card.color !== 'special') setTimeout(() => {
-    updateLobby(lobby, { currentColor: card.color })
-
-    lobbyEmitter.emit('turn-end', lobby)
-  }, 1000)
+  lobbyEmitter.emit('turn-end', lobby)
 }
