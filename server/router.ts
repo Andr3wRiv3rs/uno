@@ -32,6 +32,7 @@ app.use(async (ctx, next) => {
 })
 
 httpServer.on('upgrade', async (request: IncomingMessage, socket: Socket, head: Buffer) => {
+  console.log(JSON.stringify(request.headers, null, 2))
   const [nickname] = request.headers.cookie?.match(/(?<=nickname=)[^;]+/) || []
 
   WebsocketServer.server.handleUpgrade(request, socket, head, ws => {
@@ -41,7 +42,7 @@ httpServer.on('upgrade', async (request: IncomingMessage, socket: Socket, head: 
 
 app.use(compression({
   filter (contentType: string) {
-    return /text\/(?!javascript|css)/i.test(contentType)
+    return /text\/(?!javascript|css)/i.test(contentType) 
   },
 }))
 
