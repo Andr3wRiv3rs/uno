@@ -8,7 +8,7 @@ import {
 } from './components/home'
 import {
   Room, 
-} from './components/Room'
+} from './components/room'
 import Router from 'preact-router'
 import './utils/index'
 
