@@ -41,7 +41,10 @@ lobbyEmitter.on('draw-card', (lobby: Lobby, nickname: string, card: Card, wasFor
 })
 
 lobbyEmitter.on('turn-end', (lobby: Lobby) => {
-  broadcastTo(peers(lobby), 'turn-end', lobby.turn)
+  broadcastTo(peers(lobby), 'turn-end', {
+    turn: lobby.turn,
+    color: lobby.currentColor,
+  })
 })
 
 lobbyEmitter.on('insert-player', (lobby: Lobby, player: Player) => {

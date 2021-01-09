@@ -4,6 +4,9 @@ import {
 import {
   authStore, lobbyStore, 
 } from "../../store"
+import {
+  Nametag, 
+} from "../nametag"
 
 // TODO: unify isInGame
 const isInGame = () => Boolean(lobbyStore.players[authStore.nickname])
@@ -72,6 +75,42 @@ export const alignCardToHand = (card: CardObject, length: number, playerIndex: n
   card.update()
 }
 
+export const alignNametag = (nametag: Nametag, playerIndex: number, referenceCard: CardObject): void => {
+  if (!referenceCard) return
+
+  const { clientWidth: width, clientHeight: height } = pixi.view.parentElement
+
+  switch (playerIndex) {
+    case 0:
+      nametag.y = height - (referenceCard.height + margin + 45)
+      nametag.x = width / 2
+      nametag.rotation = 0
+      nametag.update()
+      break
+
+    case 1:
+      nametag.y = height / 2
+      nametag.x = referenceCard.width / 2 + margin + 65
+      nametag.rotation = 0.5
+      nametag.update()
+      break
+
+    case 2:
+      nametag.y = referenceCard.height / 2 + margin + 45
+      nametag.x = pixi.view.width / 2
+      nametag.rotation = 1
+      nametag.update()
+      break
+
+    case 3:
+      nametag.y = height / 2
+      nametag.x = width - (referenceCard.width / 2 + margin + 65)
+      nametag.rotation = 0.5
+      nametag.update()
+      break
+  }
+}
+
 export const alignHands = (): void => {
   const values = Object.values(lobbyStore.players)
 
@@ -81,10 +120,12 @@ export const alignHands = (): void => {
     }
   }
 
-  values.forEach(({ hand }, playerIndex) => {
+  values.forEach(({ hand, nametag }, playerIndex) => {
     hand.forEach((card, cardIndex) => {
       alignCardToHand(card, hand.length, playerIndex, cardIndex)
     })
+
+    alignNametag(nametag, playerIndex, hand[0])
   })
 }
 

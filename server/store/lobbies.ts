@@ -6,7 +6,9 @@ import {
   EventEmitter, 
 } from "events"
 import {
-  generatePlayer, 
+  generateDeck,
+  generatePlayer,
+  shuffle, 
 } from "../utils"
 
 export const lobbyEmitter = new EventEmitter()
@@ -47,6 +49,10 @@ const updateTurn = (lobby: Lobby) => {
 
 export const drawCard = (lobby: Lobby, nickname: string, wasForced: boolean): void => {
   const player = lobby.players.find(player => nickname === player.nickname)
+
+  if (lobby.draw.length === 1) {
+    lobby.draw.push(...shuffle(generateDeck()))
+  }
 
   // TODO: unify constraints
   if (!player) throw `Received invalid player nickname from ${nickname}.`

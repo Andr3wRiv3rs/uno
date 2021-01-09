@@ -166,6 +166,8 @@ export class CardObject extends GameObject {
 
     this.type = card.type
     this.color = card.color
+
+    this.update()
   }
 
   async flip (): Promise<void> {

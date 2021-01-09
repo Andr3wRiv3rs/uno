@@ -25,6 +25,7 @@ import {
   generateDiscardDrawPiles,
   generateHand,
   alignHands,
+  setActiveNametag,
 } from '../../utils/index'
 import {
   Player,
@@ -49,6 +50,7 @@ const init = () => {
   lobbyStore.subscribeToRoom(lobbyStore.current)
   lobbyStore.discard.color = lobbyStore.current.currentColor
   lobbyStore.discard.update()
+  setActiveNametag()
 
   if (!lobbyStore.players[authStore.nickname]) {
     lobbyStore.join()
@@ -113,8 +115,15 @@ const init = () => {
     lobbyStore.discard.update()
   })
 
-  ws.onEvent<number>('turn-end', (turn) => {
+  ws.onEvent<{
+    turn: number
+    color: CardColor
+  }>('turn-end', ({ turn, color }) => {
     lobbyStore.current.turn = turn
+    lobbyStore.current.currentColor = color
+    lobbyStore.discard.color = color
+    lobbyStore.discard.update()
+    setActiveNametag()
     testMatchingCards()
   })
 }

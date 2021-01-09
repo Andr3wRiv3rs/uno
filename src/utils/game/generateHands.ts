@@ -7,6 +7,9 @@ import {
 import {
   lobbyStore, 
 } from '../../store'
+import {
+  Nametag, 
+} from '../nametag'
 
 export const generateHand = (player: Player, playerIndex: number): void => {
   if (lobbyStore.players[player.nickname]) return
@@ -16,6 +19,7 @@ export const generateHand = (player: Player, playerIndex: number): void => {
   lobbyStore.players[player.nickname] = {
     hand: cards,
     player,
+    nametag: new Nametag(player.nickname),
     index: playerIndex,
   }
 }

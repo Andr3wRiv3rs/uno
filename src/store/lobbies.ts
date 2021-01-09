@@ -12,6 +12,7 @@ import {
 import {
   api,
   CardObject,
+  Nametag,
   ws, 
 } from '../utils/index'
 import {
@@ -30,6 +31,7 @@ class LobbyStore {
     player: Player
     hand: CardObject[]
     index: number
+    nametag: Nametag
   }> = {}
 
   discard: CardObject = null
