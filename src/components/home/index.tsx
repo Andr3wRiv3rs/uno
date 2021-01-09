@@ -49,10 +49,10 @@ const Create: FunctionalComponent = () => {
     <h2>create a game</h2>
     <input placeholder="lobby name.." onChange={handleChange} />
 
-    <span>
+    {/* <span>
       <input id="private" type="checkbox" onChange={handleCheckboxChange} />
       <label for="private">private</label>
-    </span>
+    </span> */}
 
     <button onClick={handleClick}>start</button>
   </div>

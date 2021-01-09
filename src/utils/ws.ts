@@ -5,7 +5,10 @@ import {
 export let ws: WebsocketClient
 
 if (typeof window !== 'undefined') {
-  ws = new WebsocketClient(`ws://localhost:8000/ws`)
+  ws = new WebsocketClient(
+    process.env.NODE_ENV === 'development' 
+      ? `ws://localhost:8000/ws`
+      : `${window.location.protocol.includes('https') ? 'wss' : 'ws'}://${window.location.host}/ws`)
 
   ws.onOpen(() => console.log('Established WebSocket connection.'))
   
