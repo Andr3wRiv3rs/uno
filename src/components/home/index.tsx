@@ -107,7 +107,7 @@ export const Home: FunctionalComponent = observer(() => <>
     {
       authStore.loggedIn ? <>
         <Create />
-        <Browse />
+        {/* <Browse /> */}
       </> : <Auth />
     }
   </div>

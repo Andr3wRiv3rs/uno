@@ -23,9 +23,14 @@ router.post('/set-nickname', ctx => {
 
   if (!constraints.name(nickname)) return ctx.throw(400, 'Invalid name. Must be 1-32 characters long.')
 
+  // don't try this at home
+  const domain = ctx.origin.replace(/https?:\/\//, '').replace(/:[0-9]+/, '')
+
   ctx.cookies.set('nickname', nickname, {
     expires: new Date(Date.now() + YEAR),
     sameSite: 'lax',
+    domain,
+    secure: ctx.origin.includes('https://'),
   })
 
   ctx.body = ''

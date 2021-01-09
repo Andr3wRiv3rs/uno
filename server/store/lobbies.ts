@@ -15,7 +15,7 @@ export const lobbies: Lobby[] = []
 
 export const insertLobby = (lobby: Lobby): void => {
   lobbies.push(lobby)
-  lobbyEmitter.emit('insert-lobbies', [lobby])
+  lobbyEmitter.emit('insert-lobby', lobby)
 }
 
 export const updateLobby = (lobby: Lobby, payload: Record<string, unknown>): void => {
