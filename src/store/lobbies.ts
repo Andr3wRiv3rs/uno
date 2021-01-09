@@ -125,6 +125,9 @@ class LobbyStore {
       lobbyName: this.current.name,
       color,
     })
+
+    this.discard.color = color
+    this.discard.update()
   }
 }
 

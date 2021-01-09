@@ -28,7 +28,8 @@ import {
 } from '../../utils'
 import {
   Player,
-  Card, 
+  Card,
+  CardColor, 
 } from '@types'
 
 const isInGame = () => Boolean(lobbyStore.players[authStore.nickname])
@@ -46,6 +47,8 @@ const init = () => {
   generateDiscardDrawPiles()
   processPlayers()
   lobbyStore.subscribeToRoom(lobbyStore.current)
+  lobbyStore.discard.color = lobbyStore.current.currentColor
+  lobbyStore.discard.update()
 
   if (!lobbyStore.players[authStore.nickname]) {
     lobbyStore.join()
@@ -100,6 +103,14 @@ const init = () => {
       lobbyStore.discard.update()
       card.destroy()
     })
+  })
+
+  ws.onEvent<{
+    color: CardColor
+  }>('choose-color', (color) => {
+    // TODO: figure out what's wrong with this type
+    lobbyStore.discard.color = color as unknown as "special"
+    lobbyStore.discard.update()
   })
 
   ws.onEvent<number>('turn-end', (turn) => {

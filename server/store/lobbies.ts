@@ -96,6 +96,7 @@ export const chooseColor = (lobby: Lobby, nickname: string, color: CardColor): v
 
   updateTurn(lobby)
 
+  lobbyEmitter.emit('choose-color', lobby, color)
   lobbyEmitter.emit('turn-end', lobby)
 }
 
@@ -112,7 +113,7 @@ export const playCard = (lobby: Lobby, nickname: string, cardIndex: number): voi
 
   const isSpecialCard = card.color === 'special'
   const isSameType = card.type === lastCard.type
-  const isSameColor = card.color === lastCard.color
+  const isSameColor = card.color === lobby.currentColor
 
   if (lobby.turn !== player.index) throw `Player ${nickname} tried to play a card when it wasn't their turn.`
 
@@ -137,6 +138,10 @@ export const playCard = (lobby: Lobby, nickname: string, cardIndex: number): voi
       case 'reverse':
         lobby.order *= -1
         updateTurn(lobby)
+
+        if (lobby.players.length === 2) {
+          updateTurn(lobby)
+        }
         break
 
       case 'wild':
@@ -151,6 +156,8 @@ export const playCard = (lobby: Lobby, nickname: string, cardIndex: number): voi
 
     updateLobby(lobby, {
       discard: lobby.discard,
+      currentColor: card.color,
+      awaitingChoice: lobby.awaitingChoice,
     })
   }
 

@@ -11,7 +11,7 @@ import {
   lobbyEmitter,
 } from '../store'
 import {
-  Card, Player, 
+  Card, CardColor, Player, 
 } from "../../@types"
 
 // TODO: fix inconsistent naming wiith lobbies/room
@@ -46,4 +46,8 @@ lobbyEmitter.on('turn-end', (lobby: Lobby) => {
 
 lobbyEmitter.on('insert-player', (lobby: Lobby, player: Player) => {
   broadcastTo(peers(lobby), 'insert-player', player)
+})
+
+lobbyEmitter.on('choose-color', (lobby: Lobby, color: CardColor) => {
+  broadcastTo(peers(lobby), 'choose-color', color)
 })

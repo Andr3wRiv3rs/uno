@@ -101,7 +101,7 @@ export class CardObject extends GameObject {
 
         text.style.fontSize = '50px'
 
-        if (typeof type === 'string' && type.includes('wild')) {
+        if (this.color === 'special') {
           graphics.beginFill(red)
           graphics.drawRect(0, 0, width / 2, height / 2)
 

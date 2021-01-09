@@ -12,5 +12,7 @@ export const generateDiscardDrawPiles = (): void => {
   lobbyStore.draw.flipped = true
   lobbyStore.draw.container.alpha = 0.4
 
+  console.log(lobbyStore.current.discard.slice(-1)[0].color)
+
   lobbyStore.discard = new CardObject(lobbyStore.current.discard.slice(-1)[0])
 }
