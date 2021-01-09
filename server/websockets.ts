@@ -6,7 +6,7 @@ import {
   WebsocketServer,
   WebsocketPeer,
   wsLogTag,
-} from './utils'
+} from './utils/index'
 import {
   events, 
 } from './events'

@@ -16,7 +16,7 @@ import {
   generatePlayer,
   getSafeLobby,
   shuffle,
-} from '../utils'
+} from '../utils/index'
 
 const router = new Router<KoaState>()
 

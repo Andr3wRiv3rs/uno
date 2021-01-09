@@ -25,7 +25,7 @@ import {
   generateDiscardDrawPiles,
   generateHand,
   alignHands,
-} from '../../utils'
+} from '../../utils/index'
 import {
   Player,
   Card,
@@ -129,7 +129,7 @@ const Picker: FunctionalComponent = () => (
 )
 
 export const Room: FunctionalComponent<{
-  name: string
+  name?: string
 }> = observer((props) => {
   lobbyStore.current = lobbyStore.list.find(lobby => lobby.name === props.name)
   const pixiContainer = useRef(null)

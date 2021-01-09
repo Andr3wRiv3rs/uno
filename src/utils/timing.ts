@@ -16,6 +16,7 @@ export const EasingFunctions: Record<string, TimingFunction> = {
   easeInOutQuint: t => t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t,
 }
 
+// TODO: disable animations on startup
 export const animate = (
   duration: number,
   callback: (t: number) => void,

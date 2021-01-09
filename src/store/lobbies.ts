@@ -13,7 +13,7 @@ import {
   api,
   CardObject,
   ws, 
-} from '../utils'
+} from '../utils/index'
 import {
   AxiosResponse,
 } from 'axios'

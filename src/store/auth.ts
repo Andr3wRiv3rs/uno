@@ -6,7 +6,7 @@ import {
 } from '../../@types'
 import {
   api, 
-} from '../utils'
+} from '../utils/index'
 
 class AuthStore {
   loggedIn = false

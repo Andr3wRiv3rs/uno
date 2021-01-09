@@ -13,7 +13,7 @@ import http, {
 import {
   httpLogTag,
   getTimestamp,
-} from './utils'
+} from './utils/index'
 import {
   Socket, 
 } from 'net'
@@ -62,8 +62,8 @@ if (process.env.NODE_ENV === 'production') {
   app.use(ctx => {
     if (ctx.status !== 404) return
 
-    const file = path.join(process.cwd(), 'dist/client', ctx.path)
-    const index = path.join(process.cwd(), 'dist/client/index.html')
+    const file = path.join(process.cwd(), 'dist', ctx.path)
+    const index = path.join(process.cwd(), 'dist/index.html')
 
     if (fs.existsSync(index)) {
       const result = ctx.path === '/' || !fs.existsSync(file) ? index : file

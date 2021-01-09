@@ -6,7 +6,7 @@ import {
   wsLogTag,
   WebsocketEvent, 
   WebsocketSubscription,
-} from '../utils'
+} from '../utils/index'
 import {
   WebsocketMessage,
   WebsocketSubscriptionPayload, 

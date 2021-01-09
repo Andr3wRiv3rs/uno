@@ -9,12 +9,17 @@
     "lib": ["DOM", "ES2020", "WebWorker", "WebWorker.ImportScripts"],
     "allowSyntheticDefaultImports": true,
     "strictFunctionTypes": false,
+    "skipLibCheck": true,
     "paths": {
       "@types": ["./@types/index"],
       "/@/*": ["./src"],
     },
     "typeRoots": [
       "./@types/index",
+    ],
+    "types": [
+      "preact",
+      "node",
     ],
     "jsx": "react",
     "jsxFragmentFactory": "h",

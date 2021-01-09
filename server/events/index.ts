@@ -1,6 +1,6 @@
 import {
   WebsocketEvent,
-} from '../utils'
+} from '../utils/index'
 import {
   subscribe,
   unsubscribe,

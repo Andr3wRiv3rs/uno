@@ -10,7 +10,7 @@ import {
   Room, 
 } from './components/Room'
 import Router from 'preact-router'
-import './utils/index.ts'
+import './utils/index'
 
 const app: FunctionalComponent = () => (
   <Router>

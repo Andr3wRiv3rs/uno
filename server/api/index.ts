@@ -2,7 +2,7 @@ import Router from 'koa-router'
 import {
   getTimestamp,
   httpLogTag,
-} from '../utils'
+} from '../utils/index'
 import {
   KoaState,
 } from '../../@types'
