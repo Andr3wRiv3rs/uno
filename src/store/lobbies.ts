@@ -64,7 +64,7 @@ class LobbyStore {
     lobby: SafeLobby
     payload: Record<string, unknown>
   }): void {
-    Object.assign(lobbyStore.list.find(({ name }) => name === props.lobby.name), props.payload)
+    // Object.assign(lobbyStore.list.find(({ name }) => name === props.lobby.name), props.payload)
   }
 
   updatePlayer (props: {

@@ -25,10 +25,11 @@ const peers = (lobby: Lobby) => Room.subscriptions
   .filter(({ payload: lobbyName }) => lobbyName === lobby.name)
   .map(({ peer }) => peer)
 
-lobbyEmitter.on('play-card', (lobby: Lobby, nickname: string, cardIndex: number) => {
+lobbyEmitter.on('play-card', (lobby: Lobby, nickname: string, cardIndex: number, card: Card) => {
   broadcastTo(peers(lobby), 'play-card', {
     nickname,
     cardIndex,
+    card,
   })
 })
 

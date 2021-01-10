@@ -23,14 +23,13 @@ import {
   testMatchingCards,
   alignAll,
   generateDiscardDrawPiles,
-  generateHand,
-  alignHands,
   setActiveNametag,
+  generateHand,
 } from '../../utils/index'
 import {
   Player,
   Card,
-  CardColor, 
+  SafeLobby, 
 } from '@types'
 
 const isInGame = () => Boolean(lobbyStore.players[authStore.nickname])
@@ -75,65 +74,54 @@ const init = () => {
     cardObject.flipped = true
 
     lobbyStore.players[nickname].hand.push(cardObject)
-
-    alignAll()
-    testMatchingCards()
   })
 
   ws.onEvent('insert-lobby', () => {
     requestAnimationFrame(() => {
-      alignAll()
-      testMatchingCards()
+      processPlayers()
     })
   })
 
+  ws.onEvent<{
+    lobby: SafeLobby
+    payload: SafeLobby
+  }>('lobby-update', ({ lobby, payload }) => {
+    if (lobby.name !== lobbyStore.current.name) return
 
-  ws.onEvent('lobby-update', () => {
     requestAnimationFrame(() => {
-      alignAll()
-      testMatchingCards()
+      console.log(payload)
+      Object.assign(lobbyStore.current, lobby)
+
+      lobbyStore.discard.color = lobby.currentColor
+      lobbyStore.discard.update()
+      console.log(lobbyStore.current.currentColor)
+
+      processPlayers()
+      setActiveNametag()
     })
   })
 
   ws.onEvent<{
     nickname: string
     cardIndex: number
-  }>('play-card', ({ nickname, cardIndex }) => {
+    card: Card
+  }>('play-card', ({ nickname, cardIndex, card }) => {
     if (nickname === authStore.nickname) return
 
-    const [card] = lobbyStore.players[nickname].hand.splice(cardIndex, 1)
+    const [cardObject] = lobbyStore.players[nickname].hand.splice(cardIndex, 1)
 
-    alignHands()
+    cardObject.type = card.type
+    cardObject.color = card.color
 
-    card.rotate(lobbyStore.discard.rotation)
+    cardObject.rotate(lobbyStore.discard.rotation)
 
-    card.moveTo(lobbyStore.discard.x, lobbyStore.discard.y).then(() => {
-      lobbyStore.discard.color = card.color
-      lobbyStore.discard.type = card.type
+    cardObject.moveTo(lobbyStore.discard.x, lobbyStore.discard.y).then(() => {
+      lobbyStore.discard.color = cardObject.color
+      lobbyStore.discard.type = cardObject.type
 
       lobbyStore.discard.update()
-      card.destroy()
+      cardObject.destroy()
     })
-  })
-
-  ws.onEvent<{
-    color: CardColor
-  }>('choose-color', (color) => {
-    // TODO: figure out what's wrong with this type
-    lobbyStore.discard.color = color as unknown as "special"
-    lobbyStore.discard.update()
-  })
-
-  ws.onEvent<{
-    turn: number
-    color: CardColor
-  }>('turn-end', ({ turn, color }) => {
-    lobbyStore.current.turn = turn
-    lobbyStore.current.currentColor = color
-    lobbyStore.discard.color = color
-    lobbyStore.discard.update()
-    setActiveNametag()
-    testMatchingCards()
   })
 }
 

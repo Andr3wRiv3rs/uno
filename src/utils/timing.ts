@@ -19,21 +19,25 @@ export const EasingFunctions: Record<string, TimingFunction> = {
 // TODO: disable animations on startup
 export const animate = (
   duration: number,
-  callback: (t: number) => void,
+  callback: (t: number, cancel: () => void) => void,
   fps = 60,
 ): Promise<void> => new Promise(resolve => {
   let frame = 0
 
+  const cancel = () => {
+    clearInterval(interval)
+    resolve()
+  }
+
   const interval = setInterval(() => {
     const x = frame / (duration / fps)
     
-    callback(x > 1 ? 1 : x)
+    callback(x > 1 ? 1 : x, cancel)
 
-    if (frame >= duration / fps) {
-      clearInterval(interval)
-      resolve()
-    }
+    if (frame >= duration / fps) cancel()
 
     frame++
   }, 1000 / fps)
+
+  return interval
 })

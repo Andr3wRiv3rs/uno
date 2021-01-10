@@ -43,9 +43,10 @@ export class WebsocketClient {
 
     const seconds = times[Math.min(Math.floor(this.connectionAttempts / 10), times.length - 1)]
     
-    if (fromClose) setTimeout(() => {
+    setTimeout(() => {
       if (this.connection.readyState !== 1) {
         this.connection.removeEventListener('open', openHandler)
+        this.connection.removeEventListener('close', closeHandler)
         this.connect(url)
       }
     }, 1000 * seconds)

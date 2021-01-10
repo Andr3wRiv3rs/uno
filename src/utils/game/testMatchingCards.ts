@@ -1,12 +1,6 @@
 import {
   authStore, lobbyStore, 
 } from "../../store"
-import {
-  ws, 
-} from "../ws"
-import {
-  alignHands, 
-} from "./align"
 
 const isInGame = () => Boolean(lobbyStore.players[authStore.nickname])
 
@@ -18,9 +12,11 @@ export const testMatchingCards = (): void => {
   if (isInGame()) lobbyStore.players[authStore.nickname].hand.forEach((card) => {
     const [lastCard] = lobbyStore.current.discard.slice(-1)
 
+    const { currentColor } = lobbyStore.current 
+
     const isSpecialCard = card.color === 'special'
     const isSameType = card.type === lastCard.type
-    const isSameColor = card.color === lastCard.color || (lastCard.color === 'special' && lobbyStore.current.currentColor === card.color) 
+    const isSameColor = card.color === currentColor
 
     if (isMyTurn && (isSpecialCard || isSameColor || isSameType)) {
       card.container.alpha = 1
@@ -38,8 +34,6 @@ export const testMatchingCards = (): void => {
         lobbyStore.playCard(index)
 
         lobbyStore.players[authStore.nickname].hand.splice(index, 1)
-  
-        alignHands()
   
         await card.rotate(lobbyStore.discard.rotation)
         lobbyStore.discard.type = card.type

@@ -45,6 +45,8 @@ export class CardObject extends GameObject {
   borderWidth = 3
   hover = false
   isHoverable = false
+
+  cancelMove: null | (() => void)
   
   mousedownListener: (event: PIXI.InteractionEvent) => void
 
@@ -168,6 +170,10 @@ export class CardObject extends GameObject {
     this.color = card.color
 
     this.update()
+
+    requestAnimationFrame(() => {
+      if (this.cancelMove) this.cancelMove()
+    })
   }
 
   async flip (): Promise<void> {
@@ -205,12 +211,21 @@ export class CardObject extends GameObject {
     const xDistance = x - this.x
     const yDistance = y - this.y
 
-    await animate(500, t => {
+    if (this.cancelMove) this.cancelMove()
+
+    await animate(500, (t, cancel) => {
       this.x = startX + (xDistance * EasingFunctions.easeOutQuad(t))
       this.y = startY + (yDistance * EasingFunctions.easeOutQuad(t))
 
+      this.cancelMove = cancel
+
       this.update()
     })
+
+    this.x = x
+    this.y = y
+
+    this.update()
   }
 }
 

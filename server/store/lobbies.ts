@@ -71,7 +71,7 @@ export const drawCard = (lobby: Lobby, nickname: string, wasForced: boolean): vo
 
   lobbyEmitter.emit('draw-card', lobby, nickname, card, wasForced)
 
-  updateLobby(lobby, {
+  if (!wasForced) updateLobby(lobby, {
     turn: lobby.turn,
   })
 }
@@ -87,11 +87,6 @@ export const chooseColor = (lobby: Lobby, nickname: string, color: CardColor): v
 
   if (lobby.turn !== player.index) throw `Player ${nickname} tried to play a card when it wasn't their turn.`
 
-  updateLobby(lobby, {
-    currentColor: color,
-    awaitingChoice: false,
-  })
-
   const [lastCard] = lobby.discard.slice(-1)
 
   if (lastCard.type === 'wild-draw-4') {
@@ -106,6 +101,12 @@ export const chooseColor = (lobby: Lobby, nickname: string, color: CardColor): v
 
   lobbyEmitter.emit('choose-color', lobby, color)
   lobbyEmitter.emit('turn-end', lobby)
+
+  updateLobby(lobby, {
+    turn: lobby.turn,
+    currentColor: color,
+    awaitingChoice: false,
+  })
 }
 
 export const playCard = (lobby: Lobby, nickname: string, cardIndex: number): void => {
@@ -130,7 +131,7 @@ export const playCard = (lobby: Lobby, nickname: string, cardIndex: number): voi
   if (isSpecialCard || isSameType || isSameColor) {
     lobby.discard.push(player.hand.splice(cardIndex, 1)[0])
 
-    lobbyEmitter.emit('play-card', lobby, nickname, cardIndex)
+    lobbyEmitter.emit('play-card', lobby, nickname, cardIndex, card)
 
     switch (card.type) {
       case 'draw-2':
@@ -164,12 +165,16 @@ export const playCard = (lobby: Lobby, nickname: string, cardIndex: number): voi
         break
     }
 
+    lobbyEmitter.emit('turn-end', lobby)
+
     updateLobby(lobby, {
-      discard: lobby.discard,
+      turn: lobby.turn,
       currentColor: card.color,
       awaitingChoice: lobby.awaitingChoice,
     })
   }
-
-  lobbyEmitter.emit('turn-end', lobby)
 }
+
+lobbyEmitter.on('turn-end', (lobby) => {
+  console.log(lobby)
+})
