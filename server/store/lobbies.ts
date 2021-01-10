@@ -45,6 +45,8 @@ const updateTurn = (lobby: Lobby) => {
       
   if (lobby.turn > lobby.players.length - 1) lobby.turn = 0
   if (lobby.turn < 0) lobby.turn = lobby.players.length - 1
+
+  console.log('updated turn', lobby.turn)
 }
 
 export const drawCard = (lobby: Lobby, nickname: string, wasForced: boolean): void => {
@@ -107,6 +109,8 @@ export const chooseColor = (lobby: Lobby, nickname: string, color: CardColor): v
 }
 
 export const playCard = (lobby: Lobby, nickname: string, cardIndex: number): void => {
+  console.log('played card', nickname, cardIndex)
+
   const player = lobby.players.find(player => nickname === player.nickname)
 
   if (!player) throw `Received invalid player nickname from ${nickname}.`

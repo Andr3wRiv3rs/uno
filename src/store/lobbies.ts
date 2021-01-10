@@ -50,11 +50,14 @@ class LobbyStore {
   }
 
   insert (lobby: SafeLobby): void {
-    lobbyStore.list.push(lobby)
+    const existingLobby = lobbyStore.list.find(({ name }) => lobby.name === name)
+    
+    if (existingLobby) Object.assign(existingLobby, lobby)
+    else lobbyStore.list.push(lobby)
   }
 
   remove (name: string): void {
-    lobbyStore.list.splice(this.list.findIndex(lobby => lobby.name === name), 1)
+    lobbyStore.list.splice(lobbyStore.list.findIndex(lobby => lobby.name === name), 1)
   }
 
   update (props: {
@@ -96,6 +99,8 @@ class LobbyStore {
     ws.sendEvent('subscribe', {
       name: 'room',
       payload: lobby.name,
+    }, {
+      persistent: true,
     })
 
     this.current = this.list.find(({ name }) => name === lobby.name)

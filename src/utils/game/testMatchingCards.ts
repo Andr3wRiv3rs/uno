@@ -66,11 +66,7 @@ export const testMatchingCards = (): void => {
 
     if (lobbyStore.draw.mousedownListener) return
 
-    lobbyStore.draw.mousedownListener = () => {
-      ws.sendEvent('draw-card', {
-        lobbyName: lobbyStore.current.name,
-      })
-    }
+    lobbyStore.draw.mousedownListener = () => lobbyStore.drawCard()
 
     lobbyStore.draw.graphics.addListener('mousedown', lobbyStore.draw.mousedownListener)
   } else {

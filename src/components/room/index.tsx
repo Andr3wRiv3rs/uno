@@ -80,8 +80,17 @@ const init = () => {
     testMatchingCards()
   })
 
+  ws.onEvent('insert-lobby', () => {
+    requestAnimationFrame(() => {
+      alignAll()
+      testMatchingCards()
+    })
+  })
+
+
   ws.onEvent('lobby-update', () => {
     requestAnimationFrame(() => {
+      alignAll()
       testMatchingCards()
     })
   })
@@ -137,6 +146,8 @@ const Picker: FunctionalComponent = () => (
   </div>
 )
 
+let started = false
+
 export const Room: FunctionalComponent<{
   name?: string
 }> = observer((props) => {
@@ -148,7 +159,9 @@ export const Room: FunctionalComponent<{
   const isMyTurn = isInGame() && lobbyStore.current?.turn === lobbyStore.players[authStore.nickname]?.index
 
   useEffect(() => {
-    if (!pixiContainer || !lobbyStore.current || !authStore.nickname) return
+    if (started || !pixiContainer || !lobbyStore.current || !authStore.nickname) return
+
+    started = true
 
     pixiContainer.current.appendChild(pixi.view)
     pixi.resizeTo = pixiContainer.current

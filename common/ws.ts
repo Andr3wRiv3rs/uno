@@ -50,7 +50,7 @@ export class WebsocketClient {
       }
     }, 1000 * seconds)
 
-    if (!fromClose) this.connection.addEventListener('close', closeHandler)
+    this.connection.addEventListener('close', closeHandler)
     this.connection.addEventListener('open', openHandler)
   }
 
