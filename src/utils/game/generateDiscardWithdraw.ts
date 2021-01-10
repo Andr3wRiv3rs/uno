@@ -10,7 +10,7 @@ export const generateDiscardDrawPiles = (): void => {
 
   // TODO: make universal "disabled" style
   lobbyStore.draw.flipped = true
-  lobbyStore.draw.container.alpha = 0.4
+  lobbyStore.draw.container.alpha = 0.5
 
   console.log(lobbyStore.current.discard.slice(-1)[0].color)
 

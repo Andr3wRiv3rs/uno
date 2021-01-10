@@ -47,7 +47,7 @@ export const testMatchingCards = (): void => {
   
       card.graphics.addListener('mousedown', card.mousedownListener)
     } else {
-      card.container.alpha = 0.4
+      card.container.alpha = 0.5
       card.isHoverable = false
       card.graphics.removeListener('mousedown', card.mousedownListener)
       card.mousedownListener = null
@@ -64,7 +64,7 @@ export const testMatchingCards = (): void => {
 
     lobbyStore.draw.graphics.addListener('mousedown', lobbyStore.draw.mousedownListener)
   } else {
-    lobbyStore.draw.container.alpha = 0.4
+    lobbyStore.draw.container.alpha = 0.5
     lobbyStore.draw.isHoverable = false
 
     if (lobbyStore.draw.mousedownListener) {
