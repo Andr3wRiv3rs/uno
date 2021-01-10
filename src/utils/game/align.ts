@@ -84,28 +84,24 @@ export const alignNametag = (nametag: Nametag, playerIndex: number, referenceCar
     case 0:
       nametag.y = height - (referenceCard.height + margin + 45)
       nametag.x = width / 2
-      nametag.rotation = 0
       nametag.update()
       break
 
     case 1:
       nametag.y = height / 2
-      nametag.x = referenceCard.width / 2 + margin + 65
-      nametag.rotation = 0.5
+      nametag.x = (referenceCard.width / 2) + (nametag.text.width / 2) + margin + 65
       nametag.update()
       break
 
     case 2:
       nametag.y = referenceCard.height / 2 + margin + 45
       nametag.x = pixi.view.width / 2
-      nametag.rotation = 1
       nametag.update()
       break
 
     case 3:
       nametag.y = height / 2
-      nametag.x = width - (referenceCard.width / 2 + margin + 65)
-      nametag.rotation = 0.5
+      nametag.x = width - ((referenceCard.width / 2) + (nametag.text.width / 2) + margin + 65)
       nametag.update()
       break
   }
